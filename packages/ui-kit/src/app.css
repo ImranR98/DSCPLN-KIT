@@ -1241,7 +1241,11 @@ dialog .card__header {
     width: 100%;
     max-width: var(--page-max);
     margin: 0 auto;
+    padding: 0 var(--space-4) var(--space-5);
     display: grid;
+    /* An explicit full-width column keeps section grids (auto-fill card
+       grids) from collapsing to their max-content width. */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-4);
     align-content: start;
 }
