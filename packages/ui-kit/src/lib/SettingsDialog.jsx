@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
+import { forwardRef, useId, useImperativeHandle, useRef, useState } from 'react'
 import { getPath, setPath } from './paths.js'
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
@@ -10,6 +10,7 @@ const SettingsDialog = forwardRef(function SettingsDialog(
   ref,
 ) {
   const dialogRef = useRef(null)
+  const titleId = `settings-${useId().replace(/:/g, '')}`
   const [draft, setDraft] = useState({ schedule: { enabled: false, days: [], at: '03:00', catchUp: true } })
   const [error, setError] = useState('')
 
@@ -60,10 +61,10 @@ const SettingsDialog = forwardRef(function SettingsDialog(
   }
 
   return (
-    <dialog ref={dialogRef} className="wide-dialog">
+    <dialog ref={dialogRef} className="wide-dialog" aria-labelledby={titleId}>
       <article>
         <header className="card__header">
-          <h2>Settings</h2>
+          <h2 id={titleId}>Settings</h2>
           <span className="card__header-tools">
             <button className="outline secondary icon-button" aria-label="Close" onClick={() => dialogRef.current.close()}>&times;</button>
           </span>

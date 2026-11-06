@@ -1,13 +1,11 @@
 import { getBrand, splitBrand } from './brand.js'
 
-// Shared app chrome: brand, optional function name, page-specific controls
-// between the title and the action cluster, and a two-row meta strip.
-//
-// `actions` is the icon-button cluster (callers include ThemeToggle where
-// appropriate). `children` covers search boxes/status text that some apps put
-// in the top row. `meta`/`metaTools` render the second row.
+// Shared app chrome: brand, optional function name, optional subtitle/back
+// affordance, page-specific controls, and a meta strip.
 export default function AppHeader({
   name = null,
+  subtitle = null,
+  back = null,
   actions = null,
   meta = null,
   metaTools = null,
@@ -22,6 +20,12 @@ export default function AppHeader({
   return (
     <header className={headerClass}>
       <div className="app-header__top">
+        {back ? (
+          <a className="btn btn--ghost btn--sm app-header__back" href={back.href}>
+            <span aria-hidden="true">←</span>
+            {back.label ?? 'Back'}
+          </a>
+        ) : null}
         <h1>
           <a className="app-header__brand" href={brandHref}>
             {before}
@@ -33,6 +37,7 @@ export default function AppHeader({
         {children}
         {actions ? <div className="app-header__actions">{actions}</div> : null}
       </div>
+      {subtitle ? <p className="app-header__subtitle">{subtitle}</p> : null}
       {hasMeta ? (
         <div className="app-header__meta">
           {typeof meta === 'string' ? <span className="muted">{meta}</span> : meta}

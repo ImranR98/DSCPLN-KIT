@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useId, useRef } from 'react'
 import { useModal } from './useModal.js'
 
 // Shared native-dialog shell: article/header/title, optional close button and
@@ -20,6 +20,8 @@ export default function Dialog({
 }) {
   const localRef = useRef(null)
   const ref = dialogRef ?? localRef
+  const generatedId = useId()
+  const resolvedTitleId = titleId || (title ? `dialog-${generatedId.replace(/:/g, '')}` : undefined)
   useModal(ref, onClose, { autoOpen })
   const close = () => {
     if (requestClose) requestClose()
@@ -30,13 +32,13 @@ export default function Dialog({
     <dialog
       ref={ref}
       className={className}
-      aria-labelledby={titleId}
+      aria-labelledby={resolvedTitleId}
       aria-describedby={describedBy}
       {...rest}
     >
       <article>
         <header className="card__header">
-          <h2 id={titleId}>{title}</h2>
+          <h2 id={resolvedTitleId}>{title}</h2>
           {closeButton ? (
             <span className="card__header-tools">
               <button className="outline secondary icon-button" type="button" aria-label="Close" onClick={close}>&times;</button>

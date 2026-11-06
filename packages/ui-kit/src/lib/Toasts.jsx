@@ -5,12 +5,12 @@ import { dismissToast, toasts } from './toast.js'
 export default function Toasts() {
   const items = useSyncExternalStore(toasts.subscribe, () => toasts.items)
   return (
-    <div className="toasts" aria-live="polite" aria-atomic="false" data-testid="toasts">
+    <div className="toasts" aria-live={items.some((toast) => toast.tone === 'error') ? 'assertive' : 'polite'} aria-atomic="false" data-testid="toasts">
       {items.map((toast) => (
         <div
           key={toast.id}
           className={`toast toast--${toast.tone}`}
-          role="status"
+          role={toast.tone === 'error' ? 'alert' : 'status'}
           onClick={() => dismissToast(toast.id)}
         >
           <span className="toast__icon">

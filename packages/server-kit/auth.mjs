@@ -32,8 +32,18 @@ export function proxyAuth(config) {
 }
 
 export function authFromEnv(env = process.env) {
-  const mode = String(env.AUTH_MODE ?? '').toLowerCase()
-  if (!mode || mode === 'off') return null
+  const raw = String(env.AUTH_MODE ?? '').trim()
+  const mode = raw.toLowerCase()
+  if (!raw) {
+    // Local development gets the historical no-auth behavior, but a production
+    // process must never start without an explicit decision. This prevents a
+    // missing env var from exposing every API on an app that bypasses the proxy.
+    if (String(env.NODE_ENV ?? '').toLowerCase() === 'production') {
+      throw new Error('AUTH_MODE must be explicitly set to "proxy-header" or "off" in production')
+    }
+    return null
+  }
+  if (mode === 'off') return null
   if (mode !== 'proxy-header') {
     throw new Error(`AUTH_MODE "${env.AUTH_MODE}" is not supported (use "proxy-header" or "off")`)
   }

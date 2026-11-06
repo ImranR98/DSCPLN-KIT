@@ -48,10 +48,14 @@ test('proxyAuth lets OPTIONS preflights through', async () => {
   })
 })
 
-test('no middleware means no guard (local/dev default)', async () => {
+test('no middleware means no guard for local/dev, but production fails closed', async () => {
   await withServer(null, async (base) => {
     assert.equal((await fetch(`${base}/api/state`)).status, 200)
   })
+  assert.equal(authFromEnv({ AUTH_MODE: 'off' }), null)
+  assert.equal(authFromEnv({}), null)
+  assert.throws(() => authFromEnv({ NODE_ENV: 'production' }), /AUTH_MODE must be explicitly set/)
+  assert.deepEqual(authFromEnv({ NODE_ENV: 'production', AUTH_MODE: 'proxy-header' }).exempt, ['/api/health'])
 })
 
 test('isAuthorized matches exact and suffix exemptions with a custom header', () => {
