@@ -11,6 +11,7 @@ export {
   humanAgo,
 } from './format.js'
 export { currentTheme, setTheme, effectiveTheme, toggleTheme } from './theme.js'
+export { BRANDS, getBrand, splitBrand, applyBrand } from './brand.js'
 export { getPath, setPath } from './paths.js'
 export { parseIso, toIso, addDays, startOfMonth, endOfMonth, sameDay, startOfDay, daysBetween } from './dates.js'
 export { setBreakableText } from './dom.js'

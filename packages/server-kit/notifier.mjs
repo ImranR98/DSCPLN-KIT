@@ -19,6 +19,7 @@ export class Notifier {
 
   setConfig(config = {}) {
     const ntfy = config.ntfy ?? {}
+    this.brand = String(config.brand ?? 'D$CPLN').trim() || 'D$CPLN'
     this.url = String(ntfy.url ?? '').trim()
     this.token = String(ntfy.token ?? '').trim()
     // When relayUrl is set the app sends to the portal instead of ntfy; the
@@ -35,7 +36,7 @@ export class Notifier {
     return /^https?:\/\//i.test(this.relayUrl) || /^https?:\/\//i.test(this.url)
   }
 
-  async notify(message, { title = 'D$CPLN', priority = 'default', tags = [], force = true } = {}) {
+  async notify(message, { title = this.brand, priority = 'default', tags = [], force = true } = {}) {
     if (!force && !this.notifySuccess) {
       return { ok: true, skipped: true }
     }
@@ -113,7 +114,7 @@ export class Notifier {
     const send = !ok || this.notifySuccess
     if (!send) return { ok: true, skipped: true }
     const result = await this.notify(summary || (ok ? 'Completed' : 'Failed'), {
-      title: `D$CPLN - ${app} ${ok ? 'OK' : 'FAILED'}`,
+      title: `${this.brand} - ${app} ${ok ? 'OK' : 'FAILED'}`,
       priority: ok ? 'default' : 'high',
       tags: ok ? ['white_check_mark'] : ['warning'],
     })

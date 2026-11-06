@@ -29,8 +29,8 @@ import { createApp } from './app.mjs'
 // recorded when it finishes).
 
 // Deep link for notification taps: the app's public URL when the deployment
-// provides one (DSCPLN_ORIGIN + BASE_PATH), otherwise nothing.
-export function clickFor(basePath = '', originEnv = process.env.DSCPLN_ORIGIN) {
+// provides one (APP_ORIGIN or DSCPLN_ORIGIN + BASE_PATH), otherwise nothing.
+export function clickFor(basePath = '', originEnv = process.env.APP_ORIGIN ?? process.env.DSCPLN_ORIGIN) {
   const origin = String(originEnv ?? '').trim().replace(/\/+$/, '')
   if (!/^https?:\/\//i.test(origin)) return ''
   const base = basePath ? `/${String(basePath).replace(/^\/+|\/+$/g, '')}` : ''
@@ -40,6 +40,7 @@ export function clickFor(basePath = '', originEnv = process.env.DSCPLN_ORIGIN) {
 export function scheduledApp(options) {
   const {
     name,
+    brand = 'D$CPLN',
     dataDir,
     basePath = process.env.BASE_PATH ?? '',
     defaults = {},
@@ -55,8 +56,8 @@ export function scheduledApp(options) {
     logDir = dataDir ? path.join(dataDir, 'logs') : null,
     onConfigChanged = null,
     onStart = null,
-    // Portal notification relay: the app posts here instead of talking to ntfy.
-    portalUrl = process.env.DSCPLN_PORTAL_URL ?? '',
+    // Notification relay: the app posts here instead of talking to ntfy.
+    portalUrl = process.env.NOTIFY_RELAY_URL ?? process.env.DSCPLN_PORTAL_URL ?? '',
     port = Number(process.env.PORT ?? 8080),
     host = process.env.HOST ?? '0.0.0.0',
   } = options
@@ -69,7 +70,7 @@ export function scheduledApp(options) {
   const config = configStore(configFile, { defaults, normalize, validate, secrets })
   const state = stateStore(stateFile)
   const runner = new Runner({ logDir, title: name })
-  const notifier = new Notifier({ app: name, relayUrl: portalUrl }, (line) => console.log(line))
+  const notifier = new Notifier({ app: name, brand, relayUrl: portalUrl }, (line) => console.log(line))
   const scheduler = new Scheduler({
     getSpec: () => (config.get() ?? defaults).schedule ?? {},
     onDue: () => runNow({ trigger: 'schedule' }),
@@ -126,6 +127,7 @@ export function scheduledApp(options) {
 
   const app = createApp({
     title: name,
+    brand,
     basePath,
     staticDir,
     config,
@@ -146,6 +148,7 @@ export function scheduledApp(options) {
     await state.load()
     const notifyConfig = (cfg) => ({
       app: name,
+      brand,
       relayUrl: portalUrl,
       notifySuccess: Boolean(cfg.notifySuccess),
       click: clickFor(basePath),

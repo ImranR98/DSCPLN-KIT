@@ -84,6 +84,7 @@ export function htmlPages(dir, { basePath = '', title = '', extraHead = '' } = {
 export function createApp(options = {}) {
   const {
     title = 'D$CPLN',
+    brand = 'D$CPLN',
     pageTitle,
     basePath = '',
     staticDir = null,
@@ -102,9 +103,9 @@ export function createApp(options = {}) {
   } = options
 
   const normalizedBase = basePath && basePath !== '/' ? basePath.replace(/\/+$/, '') : ''
-  // pageTitle: undefined -> `D$CPLN ⋅ <title>`; a string overrides; null keeps
+  // pageTitle: undefined -> `<brand> ⋅ <title>`; a string overrides; null keeps
   // the page's own <title> (apps with several pages manage their own).
-  const resolvedPageTitle = pageTitle === undefined ? `D$CPLN ⋅ ${title}` : pageTitle
+  const resolvedPageTitle = pageTitle === undefined ? (brand ? `${brand} ⋅ ${title}` : title) : pageTitle
   const app = express()
   app.disable('x-powered-by')
   app.set('trust proxy', true)

@@ -11,6 +11,7 @@ import { showToast } from './toast.js'
 
 export default function Shell({
   name,
+  brand = null,
   fields = [],
   schedule = true,
   settingsNotice = null,
@@ -124,6 +125,7 @@ export default function Shell({
     <>
       <AppHeader
         name={name}
+        brand={brand}
         meta={<span className={`status-tag status-tag--${status}`} data-testid="status"><span>{statusText}</span></span>}
         metaTools={updatedAt ? `updated ${formatTime(updatedAt)}` : null}
         actions={(

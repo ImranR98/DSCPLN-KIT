@@ -82,6 +82,53 @@ html[data-theme="dark"] {
     --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
+/* ---------- brand accents ----------
+   The default palette is D$CPLN blue. Each app sets <html data-brand="...">;
+   the :not([data-theme="dark"]) selector keeps the light and dark palettes from
+   fighting over specificity. */
+
+html[data-brand="watxt"]:not([data-theme="dark"]) {
+    --accent: #128a55;
+    --accent-hover: #0d7446;
+    --accent-soft: rgba(18, 138, 85, 0.12);
+    --accent-contrast: #ffffff;
+}
+
+html[data-brand="watxt"][data-theme="dark"] {
+    --accent: #4cc38a;
+    --accent-hover: #6ee7a0;
+    --accent-soft: rgba(76, 195, 138, 0.16);
+    --accent-contrast: #07130d;
+}
+
+html[data-brand="fl0w"]:not([data-theme="dark"]) {
+    --accent: #7c3aed;
+    --accent-hover: #6d28d9;
+    --accent-soft: rgba(124, 58, 237, 0.12);
+    --accent-contrast: #ffffff;
+}
+
+html[data-brand="fl0w"][data-theme="dark"] {
+    --accent: #a78bfa;
+    --accent-hover: #c4b5fd;
+    --accent-soft: rgba(167, 139, 250, 0.16);
+    --accent-contrast: #12081f;
+}
+
+html[data-brand="da5h"]:not([data-theme="dark"]) {
+    --accent: #c1121f;
+    --accent-hover: #a30f1a;
+    --accent-soft: rgba(193, 18, 31, 0.12);
+    --accent-contrast: #ffffff;
+}
+
+html[data-brand="da5h"][data-theme="dark"] {
+    --accent: #fb7185;
+    --accent-hover: #fda4af;
+    --accent-soft: rgba(251, 113, 133, 0.16);
+    --accent-contrast: #1a080c;
+}
+
 * {
     box-sizing: border-box;
 }
