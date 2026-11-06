@@ -87,6 +87,7 @@ export function createApp(options = {}) {
     brand = 'D$CPLN',
     pageTitle,
     basePath = '',
+    htmlBasePath = null,
     staticDir = null,
     routes = null,
     config = null,
@@ -103,6 +104,12 @@ export function createApp(options = {}) {
   } = options
 
   const normalizedBase = basePath && basePath !== '/' ? basePath.replace(/\/+$/, '') : ''
+  // The legacy app UIs can be mounted under a prefix while their internal
+  // routes stay at the root of the mounted app. htmlBasePath keeps the
+  // injected <base> and window.DSCPLN_BASE pointing at the public prefix.
+  const normalizedHtmlBase = htmlBasePath == null
+    ? normalizedBase
+    : (htmlBasePath && htmlBasePath !== '/' ? String(htmlBasePath).replace(/\/+$/, '') : '')
   // pageTitle: undefined -> `<brand> ⋅ <title>`; a string overrides; null keeps
   // the page's own <title> (apps with several pages manage their own).
   const resolvedPageTitle = pageTitle === undefined ? (brand ? `${brand} ⋅ ${title}` : title) : pageTitle
@@ -121,7 +128,7 @@ export function createApp(options = {}) {
   const router = express.Router()
 
   if (staticDir) {
-    router.use(htmlPages(staticDir, { basePath: normalizedBase, title: resolvedPageTitle }))
+    router.use(htmlPages(staticDir, { basePath: normalizedHtmlBase, title: resolvedPageTitle }))
     router.use(express.static(staticDir, { index: false, dotfiles: 'ignore' }))
   }
   // App-specific routes first: they can override any standard route.
